@@ -62,14 +62,25 @@ class Wheniwork {
     }
 
     /**
-     * Create an object.
+     * Post to an endpoint.
+     * @param  string $method  The API method to call, e.g. '/shifts/publish/'
+     * @param  array  $params  An array of data used to create the object.
+     * @param  array  $headers Array of custom headers to be passed
+     * @return array           Object of json decoded API response.
+     */
+    public function post($method, $params = array(), $headers = array()) {
+        return $this->makeRequest($method, self::METHOD_POST, $params, $headers);
+    }
+
+    /**
+     * Create an object. Helper method for post.
      * @param  string $method  The API method to call, e.g. '/users/'
      * @param  array  $params  An array of data used to create the object.
      * @param  array  $headers Array of custom headers to be passed
      * @return array           Object of json decoded API response.
      */
     public function create($method, $params = array(), $headers = array()) {
-        return $this->makeRequest($method, self::METHOD_POST, $params, $headers);
+        return $this->post($method, $params, $headers);
     }
 
     /**

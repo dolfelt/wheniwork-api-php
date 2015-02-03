@@ -19,28 +19,36 @@ You can install the wheniwork-api using [Composer](https://getcomposer.org/). Ju
     }
 
 You will then need to:
-* run ``composer install`` to get these dependencies added to your vendor directory
-* add the Composer autoloader to your application with this line: ``require("vendor/autoload.php")``
+* run `composer install` to get these dependencies added to your vendor directory
+* add the Composer autoloader to your application with this line: `require("vendor/autoload.php")`
 
 Examples
 --------
 
+Login (requires Developer Key)
+
+```php
+$response = Wheniwork::login('developer_key', 'daniel@example.com', '******');
+// TODO: Store the API token somewhere
+$wiw = new Wheniwork($response->login->token);
+```
+
 List users (/users/ method)
 
-    <?php
-    $wiw = new Wheniwork('user-token-here');
-    print_r($wiw->get('users'));
+```php
+$wiw = new Wheniwork('api-token-here');
+print_r($wiw->get('users'));
+```
 
 Create a new shift
 
-    <?php
-    $wiw = new Wheniwork('user-token-here');
-    $result = $wiw->create('users', array(
-                    'email'             => 'nicole.jones@example.com,
-                    'first_name'        => 'Nicole',
-                    'last_name'         => 'Jones',
-                    'phone_number'      => '+16515559009'
-                ));
-    print_r($result);
-
-
+```php
+$wiw = new Wheniwork('api-token-here');
+$result = $wiw->create('users', array(
+                'email'             => 'nicole.jones@example.com',
+                'first_name'        => 'Nicole',
+                'last_name'         => 'Jones',
+                'phone_number'      => '+16515559009'
+            ));
+print_r($result);
+```

@@ -2,14 +2,14 @@
 
 /**
  * Client library for the When I Work scheduling and attendance platform.
- * 
+ *
  * Uses curl to request JSON responses from the When I Work API.
  * This probably has more comments than code.
  *
  * Contributors:
  * Daniel Olfelt <daniel@thisclicks.com>
- * 
- * @author Daniel Olfelt <daniel@thisclicks.com> 
+ *
+ * @author Daniel Olfelt <daniel@thisclicks.com>
  * @version 0.1
  */
 class Wheniwork {
@@ -23,23 +23,34 @@ class Wheniwork {
     private $api_key;
     private $api_token;
     private $api_endpoint = 'https://api.wheniwork.com/2';
+    private $api_headers = [];
     private $verify_ssl   = false;
 
     /**
      * Create a new instance
      * @param string $api_token The user WhenIWork API token
+     * @param array $options Allows you to set the `headers` and the `endpoint`
      */
-    function __construct($api_token = null)
+    function __construct($api_token = null, $options = [])
     {
         $this->api_token = $api_token;
+
+        if (!empty($options['endpoint'])) {
+          $this->setEndpoint($options['endpoint']);
+        }
+        if (!empty($options['headers'])) {
+          $this->setHeaders($options['headers'], true);
+        }
     }
 
     /**
      * Set the user token for all requests
      * @param string $api_token The user WhenIWork API token
+     * @return Wheniwork
      */
     public function setToken($api_token) {
         $this->api_token = $api_token;
+        return $this;
     }
 
     /**
@@ -48,6 +59,48 @@ class Wheniwork {
      */
     public function getToken() {
         return $this->api_token;
+    }
+
+    /**
+    * Set the endpoint for all requests
+    * @param string $endpoint The WhenIWork API endpoint to use
+    * @return Wheniwork
+    */
+    public function setEndpoint($endpoint) {
+      $this->api_endpoint = $endpoint;
+      return $this;
+    }
+
+    /**
+    * Get the endpoint to use for future requests
+    * @return string The WhenIWork API endpoint
+    */
+    public function getEndpoint() {
+      return $this->api_endpoint;
+    }
+
+    /**
+    * Set the host for all requests
+    * @param array $headers Global headers for all future requests
+    * @return Wheniwork
+    */
+    public function setHeaders(array $headers, $reset = false) {
+      if ($reset === true) {
+        $this->api_headers = $headers;
+      }
+      else {
+        $this->api_headers += $headers;
+      }
+
+      return $this;
+    }
+
+    /**
+    * Get the host to use for future requests
+    * @return array Global headers array
+    */
+    public function getHeaders() {
+      return $this->api_headers;
     }
 
     /**
@@ -105,7 +158,7 @@ class Wheniwork {
         return $this->makeRequest($method, self::METHOD_DELETE, $params, $headers);
     }
 
-    
+
     /**
      * Performs the underlying HTTP request. Exciting stuff happening here. Not really.
      * @param  string $method  The API method to be called
@@ -116,7 +169,7 @@ class Wheniwork {
      */
     private function makeRequest($method, $request, $params = array(), $headers = array()) {
 
-        $url = $this->api_endpoint.'/'.$method;
+        $url = $this->getEndpoint().'/'.$method;
 
         if ($params && ($request == self::METHOD_GET || $request == self::METHOD_DELETE)) {
             $url .= '?'.http_build_query($params);
@@ -125,6 +178,8 @@ class Wheniwork {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_USERAGENT, 'WhenIWork-PHP/0.1');
+
+        $headers += $this->getHeaders();
 
         $headers['Content-Type'] = 'application/json';
         if ($this->api_token) {
@@ -158,10 +213,10 @@ class Wheniwork {
 
     /**
      * Login helper using developer key and credentials to get back a login response
-     * @param  $key      Developer API key 
+     * @param  $key      Developer API key
      * @param  $email    Email of the user logging in
      * @param  $password Password of the user
-     * @return    
+     * @return
      */
     public static function login($key, $email, $password) {
         $params = array(
@@ -172,7 +227,7 @@ class Wheniwork {
             'W-Key' => $key
         );
 
-        $login = new self();
+        $login = new static();
         $response = $login->makeRequest("login", self::METHOD_POST, $params, $headers);
 
         return $response;

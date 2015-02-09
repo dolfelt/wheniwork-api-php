@@ -31,7 +31,7 @@ class Wheniwork
     private $api_token;
     private $api_endpoint = 'https://api.wheniwork.com/2';
     private $api_headers  = [];
-    private $verify_ssl   = FALSE;
+    private $verify_ssl   = false;
 
     /**
      * Create a new instance
@@ -39,7 +39,7 @@ class Wheniwork
      * @param string $api_token The user WhenIWork API token
      * @param array $options Allows you to set the `headers` and the `endpoint`
      */
-    function __construct($api_token = NULL, $options = [])
+    function __construct($api_token = null, $options = [])
     {
         $this->api_token = $api_token;
 
@@ -47,7 +47,7 @@ class Wheniwork
             $this->setEndpoint($options['endpoint']);
         }
         if (!empty($options['headers'])) {
-            $this->setHeaders($options['headers'], TRUE);
+            $this->setHeaders($options['headers'], true);
         }
     }
 
@@ -104,9 +104,9 @@ class Wheniwork
      * @param bool $reset
      * @return $this
      */
-    public function setHeaders(array $headers, $reset = FALSE)
+    public function setHeaders(array $headers, $reset = false)
     {
-        if ($reset === TRUE) {
+        if ($reset === true) {
             $this->api_headers = $headers;
         } else {
             $this->api_headers += $headers;
@@ -226,9 +226,9 @@ class Wheniwork
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers_data);
 
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($request));
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-        curl_setopt($ch, CURLOPT_HEADER, FALSE);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 10);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $this->verify_ssl);
 
@@ -239,7 +239,7 @@ class Wheniwork
         $result = curl_exec($ch);
         curl_close($ch);
 
-        return $result ? json_decode($result) : FALSE;
+        return $result ? json_decode($result) : false;
     }
 
 

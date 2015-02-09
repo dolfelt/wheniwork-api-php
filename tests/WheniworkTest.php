@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../src/Wheniwork.php';
+
 /**
 * Test for the client library.
 *
